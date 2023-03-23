@@ -1,5 +1,6 @@
 import pygame
 from pygame.locals import *
+
 pygame.init()
 class Object():
     def __init__(self,image: pygame.Rect,pos:list[float,float]) -> None:
@@ -11,7 +12,6 @@ class Object():
         self.picture_pos = [0,0]
         self.rect = self.image.subsurface(0,0,32,32)
         self.size=self.rect.get_size()
-        self.anime_step =0
                     
         
         
@@ -26,10 +26,11 @@ class Bullet(Object):
 class World():
     def __init__(self) -> None:
         self.SCREENSIZE = (960,480)
-        self.TITLE ="RPG"
+        self.TITLE ="シューティングゲーム"
         self.running=True
         self.current_scene="start"
         self.EPS=60
+        self.anime_step = 0
         self.clock=pygame.time.Clock()
         pygame.init()
         
@@ -38,7 +39,6 @@ class World():
         
         self.mouse_pos=(0,0)
         self.display=[]
-        self.anime_step = 0
     def render_text(self,text, pos: tuple[int,int], size, color: tuple[int,int,int],bold =True, italic=False):
         font = pygame.font.SysFont("MS UI Gothic",size, bold, italic)
         text = font.render(text, True, color)
@@ -88,15 +88,15 @@ class World():
         self.screen.fill((255,255,255))
         
         direction_key_any_down = False
-        does_stop = False 
+        does_stop = False
     
         for event in pygame.event.get():
             
             if event.type == QUIT:
                 self.running =False
             
-            elif event.type ==MOUSEBUTTONDOWN:
-                self.mouse_pos =pygame.mouse.get_pos()
+            # elif event.type ==MOUSEBUTTONDOWN:
+            #     self.mouse_pos =pygame.mouse.get_pos()
             
             elif event.type == KEYDOWN:
                 if event.key == K_ESCAPE:
@@ -134,11 +134,11 @@ class World():
         self.bullets.append(pygame.Surface((5,5), masks=(255,0,0)))
         
     def animation(self):
-        self.anime_step +=0.05
+        self.anime_step +=0.1
         if self.anime_step > 2:
             self.anime_step =0
         print(30*int(self.anime_step))
-        self.player.picture_pos = (29 * int(self.anime_step ) + 2, self.player.picture_pos[1]) 
+        self.player.picture_pos = (30 * int(self.anime_step), self.player.picture_pos[1]) 
         
     def render_bullet(self):
         bullet= pygame.Surface((20,20), masks=(255,0,0))
@@ -162,6 +162,7 @@ class World():
         
 
     def process(self):
+        self.clock.tick(60)
         if self.current_scene=="start":
             self.start_screen()
             self.update_display()
